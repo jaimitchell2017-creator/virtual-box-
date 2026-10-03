@@ -2,8 +2,7 @@ name: Build Android APK
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
 
 jobs:
   build:
@@ -16,19 +15,20 @@ jobs:
       - name: Set up Java JDK
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
+          distribution: 'zulu'
           java-version: '17'
 
-      - name: Grant Execute Permission for Gradle
-        run: chmod +x gradlew
+      # Automatically sets up Gradle without needing a pre-existing gradlew file
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
 
-      - name: Build Debug APK
-        run: ./gradlew assembleDebug
+      - name: Build APK with Gradle
+        run: gradle assembleDebug
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: novus-vm-app
-          path: app/build/outputs/apk/debug/*.apk
+          name: app-debug
+          path: app/build/outputs/apk/debug/app-debug.apk
 
 
